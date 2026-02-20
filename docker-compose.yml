@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:16
+    container_name: maniva_db
+    environment:
+      POSTGRES_USER: maniva
+      POSTGRES_PASSWORD: maniva123
+      POSTGRES_DB: maniva
+    ports:
+      - "5432:5432"
+    volumes:
+      - maniva_db_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: maniva_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@maniva.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+volumes:
+  maniva_db_data:
