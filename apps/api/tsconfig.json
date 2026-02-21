@@ -40,6 +40,9 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
-  }
+    "skipLibCheck": true, 
+  },
+  "include": ["src/**/*.ts"], //limitar o ts para compilar apenas os arquivos dentro de src
+  "exclude": ["node_modules", "dist", "prisma", "prisma.config.ts"] //serve para evitar compilar 
 }
+

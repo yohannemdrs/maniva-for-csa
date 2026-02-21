@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MembershipRole {
+  PRODUTOR
+  COOPERADOR
+  CONSUMIDOR
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  memberships   Membership[]
+  refreshTokens RefreshToken[]
+}
+
+model Csa {
+  id          String       @id @default(cuid())
+  name        String
+  city        String
+  state       String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  memberships Membership[]
+
+  @@unique([name, city, state])
+  @@index([city, state])
+}
+
+model Membership {
+  id        String          @id @default(cuid())
+  role      MembershipRole
+  userId    String
+  csaId     String
+  createdAt DateTime        @default(now())
+
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  csa       Csa             @relation(fields: [csaId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, csaId])
+  @@index([csaId])
+  @@index([userId])
+}
+
+model RefreshToken {
+  id         String    @id @default(cuid())
+  tokenHash  String    @unique
+  userId     String
+  revokedAt  DateTime?
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
